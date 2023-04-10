@@ -1,0 +1,12 @@
+Font: Shin Retro Maru Gothic  Style: Medium
+Point Size: 24   SP/PD Ratio: 33.3%
+
+Characters included: 97/97
+Missing characters: 0
+Excluded characters: 0
+
+Characters missing from font file:
+----------------------------------------
+
+Characters excluded from packing:
+----------------------------------------
