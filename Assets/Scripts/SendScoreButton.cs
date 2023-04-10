@@ -1,6 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using UnityEngine;
@@ -18,14 +16,21 @@ public class SendScoreButton : MonoBehaviour
             .Subscribe(
                 async _ =>
                 {
+                    var csrfToken = GetCsrfTokenInternal();
+                    
                     WWWForm form = new WWWForm();
-                    form.AddField("score", 100);
+                    form.AddField("score", Random.Range(0,100));
 
-                    using var request = UnityWebRequest.Post("http://213.play.lvh.me:3000/api/v1/rankings/123/scores",form);
+                    using var request = UnityWebRequest.Post("/api/v1/scoreboards/5/scores",form);
+                    request.SetRequestHeader("X-CSRF-TOKEN", csrfToken);
+
                     await request.SendWebRequest();
-                    Debug.Log(request.downloadHandler.text);
+                    Debug.Log(request.responseCode);
                 }
             )
             .AddTo(this);
     }
+
+    [DllImport("__Internal")]
+    private static extern string GetCsrfTokenInternal();
 }
