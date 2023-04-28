@@ -1,8 +1,7 @@
 using System;
-using System.Runtime.InteropServices;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
-using Cysharp.Threading.Tasks;
-using UniRx;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -13,20 +12,19 @@ public class SendScoreButton : MonoBehaviour
     
     void Start()
     {
+     
+
         var button = GetComponent<Button>();
         
-        button.OnClickAsObservable()
-            .Subscribe(
-                async _ =>
-                {
-                    await SendScore(Random.Range(0, 100));
-                }
-            )
-            .AddTo(this);
+        button.onClick.AddListener(
+            () =>
+            {
+                StartCoroutine(SendScore2(Random.Range(0, 100)));
+            });
     }
 
-    async UniTask SendScore(float score)
-    {
+ 
+    IEnumerator SendScore2(float score) {
         var scoreboardId = 1;
         var url = $"http://219.play.lvh.me:3000/api/v1/scoreboards/{scoreboardId}/scores";
 
@@ -34,7 +32,7 @@ public class SendScoreButton : MonoBehaviour
             .ToString();
         var scoreText = score.ToString();
 
-        var sha1Text = sha1($"{timestampText}:{scoreText}", "12345");
+        var sha1Text = sha1($"{timestampText}:{scoreText}", "kr/2mTwV6XQsOPCFqpN3lw==");
         
         WWWForm form = new WWWForm();
         form.AddField("score", scoreText );
@@ -43,8 +41,14 @@ public class SendScoreButton : MonoBehaviour
         request.SetRequestHeader("X-Unityroom-Timestamp", timestampText);
         request.SetRequestHeader("X-UNITYROOM-HMAC-SHA1", sha1Text);
 
-        await request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);
+        yield return request.SendWebRequest();
+ 
+        if (request.result != UnityWebRequest.Result.Success) {
+            Debug.Log(request.error);
+        }
+        else {
+            Debug.Log(request.downloadHandler.text);
+        }
     }
     
     string sha1(string planeStr, string key) {
