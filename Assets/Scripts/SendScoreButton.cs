@@ -19,9 +19,11 @@ public class SendScoreButton : MonoBehaviour
 
     void OnClick()
     {
-        var boardNo = 1;
+        var boardNo = 1; //unityroomのスコアボード設定ページにある"ボードNo"を入力してください。
+        var authenticationKey = "kr/2mTwV6XQsOPCFqpN3lw=="; //unityroomのスコアボード設定ページにある"認証用シークレット"を入力してください。
+
+        //獲得スコア
         var score = Random.Range(0, 100);
-        var authenticationKey = "kr/2mTwV6XQsOPCFqpN3lw==";
 
         //スコア送信
         StartCoroutine(SendScore(boardNo, score, authenticationKey));
