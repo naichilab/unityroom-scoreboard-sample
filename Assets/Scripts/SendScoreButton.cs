@@ -19,27 +19,27 @@ public class SendScoreButton : MonoBehaviour
 
     void OnClick()
     {
-        var scoreBoardId = 1;
-        var authenticationKey = "kr/2mTwV6XQsOPCFqpN3lw==";
+        var boardNo = 1;
         var score = Random.Range(0, 100);
+        var authenticationKey = "kr/2mTwV6XQsOPCFqpN3lw==";
 
         //スコア送信
-        StartCoroutine(SendScore(scoreBoardId, score, authenticationKey));
+        StartCoroutine(SendScore(boardNo, score, authenticationKey));
     }
 
     IEnumerator SendScore(
-        int scoreboardId
+        int boardNo
         , float score
         , string authenticationKey
     )
     {
         if (IsEditor())
         {
-            Debug.Log($"スコア送信 scoreboardId={scoreboardId} score={score} (unityroomにゲームをアップロードすると実際に送信されます)");
+            Debug.Log($"スコア送信 scoreboardId={boardNo} score={score} (unityroomにゲームをアップロードすると実際に送信されます)");
             yield break;
         }
 
-        var url = $"/api/v1/scoreboards/{scoreboardId}/scores";
+        var url = $"/api/v1/scoreboards/{boardNo}/scores";
         var scoreText = score.ToString(CultureInfo.InvariantCulture);
         var hmac = SHA1(scoreText, authenticationKey);
         var form = new WWWForm();
