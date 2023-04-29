@@ -47,9 +47,7 @@ public class SendScoreButton : MonoBehaviour
         using var request = UnityWebRequest.Post(url, form);
         request.SetRequestHeader("X-Unityroom-Signature", hmac);
         yield return request.SendWebRequest();
-        var log
-            = $"{(request.result == UnityWebRequest.Result.Success ? request.responseCode.ToString() : request.error)} : {request.downloadHandler.text}";
-        Debug.Log(log);
+        Debug.Log($"{request.responseCode}|{request.downloadHandler.text}");
     }
 
     private static string SHA1(string text, string key)
