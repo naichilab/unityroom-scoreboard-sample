@@ -35,7 +35,7 @@ public class SendScoreButton : MonoBehaviour
     {
         if (IsEditor())
         {
-            Debug.Log($"スコア送信 scoreboardId={boardNo} score={score} (unityroomにゲームをアップロードすると実際に送信されます)");
+            Debug.Log($"スコア送信 boardNo={boardNo} score={score} (unityroomにゲームをアップロードすると実際に送信されます)");
             yield break;
         }
 
