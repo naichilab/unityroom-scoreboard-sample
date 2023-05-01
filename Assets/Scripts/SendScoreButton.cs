@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
@@ -41,9 +42,9 @@ public class SendScoreButton : MonoBehaviour
             yield break;
         }
 
-        var url = $"/api/v1/scoreboards/{boardNo}/scores";
+        var url = $"/gameplay_api/v1/scoreboards/{boardNo}/scores";
         var scoreText = score.ToString(CultureInfo.InvariantCulture);
-        var hmac = SHA1(scoreText, authenticationKey);
+        var hmac = SHA256(scoreText, authenticationKey);
         var form = new WWWForm();
         form.AddField("score", scoreText);
         using var request = UnityWebRequest.Post(url, form);
@@ -52,14 +53,17 @@ public class SendScoreButton : MonoBehaviour
         Debug.Log($"{request.responseCode}|{request.downloadHandler.text}");
     }
 
-    private static string SHA1(string text, string key)
+    private static string SHA256(string text, string key)
     {
-        var utf8 = new UTF8Encoding();
-        var planeBytes = utf8.GetBytes(text);
+        var utf8 = new UTF8Encoding(false); //BOM無しUTF-8
+        var textBytes = utf8.GetBytes(text);
         var keyBytes = utf8.GetBytes(key);
-        var sha1 = new System.Security.Cryptography.HMACSHA1(keyBytes);
-        var hashBytes = sha1.ComputeHash(planeBytes);
-        return hashBytes.Aggregate("", (current, b) => current + $"{b,0:x2}");
+        var sha256 = new System.Security.Cryptography.HMACSHA256(keyBytes);
+        var hashBytes = sha256.ComputeHash(textBytes);
+
+        //byte型配列を16進数に変換
+        var hash = BitConverter.ToString(hashBytes).ToLower().Replace("-", "");
+        return hash;
     }
 
     private bool IsEditor()
