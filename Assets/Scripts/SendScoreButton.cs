@@ -20,8 +20,10 @@ public class SendScoreButton : MonoBehaviour
 
     void OnClick()
     {
-        var boardNo = 1; //unityroomのスコアボード設定ページにある"ボードNo"を入力してください。
-        var authenticationKey = "kr/2mTwV6XQsOPCFqpN3lw=="; //unityroomのスコアボード設定ページにある"認証用シークレット"を入力してください。
+        //unityroomのスコアボード設定ページにある"ボードNo"を使用してください。
+        var boardNo = 1; 
+        //unityroomのスコアボード設定ページにある"認証用キー"を使用してください。
+        var authenticationKey = "5WCfLECeGOOUwSiThshDGWznn+eM9mVlRSX4BbDmIzhbhi8JhH7jHcFERUCqV++IkxpygP+8n+qDGlVDGyH7OQ=="; 
 
         //獲得スコア
         var score = Random.Range(0, 100);
@@ -53,11 +55,12 @@ public class SendScoreButton : MonoBehaviour
         Debug.Log($"{request.responseCode}|{request.downloadHandler.text}");
     }
 
-    private static string SHA256(string text, string key)
+    private static string SHA256(string text, string base64Key)
     {
+       
         var utf8 = new UTF8Encoding(false); //BOM無しUTF-8
         var textBytes = utf8.GetBytes(text);
-        var keyBytes = utf8.GetBytes(key);
+        var keyBytes = Convert.FromBase64String(base64Key);
         var sha256 = new System.Security.Cryptography.HMACSHA256(keyBytes);
         var hashBytes = sha256.ComputeHash(textBytes);
 
