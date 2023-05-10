@@ -12,6 +12,8 @@ public class SendScoreButton : MonoBehaviour
 {
     [SerializeField]
     private Button Button;
+    [SerializeField]
+    private int BoardNo;
 
     void Start()
     {
@@ -20,18 +22,13 @@ public class SendScoreButton : MonoBehaviour
 
     void OnClick()
     {
-        //unityroomのスコアボード設定ページにある"ボードNo"を使用してください。
-        var boardNo = 1;
-
-        //unityroomのスコアボード設定ページにある"認証用キー"を使用してください。
-        var authenticationKey
-            = "4WXyUpqaDws8VZL1LsixwooVP+9kDgAmXQMB63wWOl5s271rhZcBa0irVeTlda/zAtuvcgBfEWj3oZ4FptQmjg==";
-
         //獲得スコア
-        var score = Random.Range(0, 100);
+        var score = Random.Range(0f, 100f);
+        var authenticationKey
+            = "Dts7JwXskWwF371olNr4I2VR6MS7vSE48o2g9Rl1c3piSH76cP2ZCSBruVhyjyzttmKAV46wy2kU/5tTA4qmoQ==";
 
         //スコア送信
-        StartCoroutine(SendScore(boardNo, score, authenticationKey));
+        StartCoroutine(SendScore(BoardNo, score, authenticationKey));
     }
 
     IEnumerator SendScore(
