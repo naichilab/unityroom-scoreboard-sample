@@ -43,24 +43,26 @@ public class SendScoreButton : MonoBehaviour
             yield break;
         }
 
-        // 送信するスコアを文字列に変換しておく
-        var scoreText = score.ToString(CultureInfo.InvariantCulture);
+        // スコア送信APIエンドポイント
+        var path = $"/gameplay_api/v1/scoreboards/{boardNo}/scores";
 
         // 現在のUNIXTIMEを取得
         var unixtime = GetCurrentUnixTime()
             .ToString();
 
+        // 送信するスコアを文字列に変換しておく
+        var scoreText = score.ToString(CultureInfo.InvariantCulture);
+
         // 認証用のHMAC(Hash-based Message Authentication Code)を計算する
-        var hmacDataText = $"{unixtime}:{scoreText}";
+        var hmacDataText = $"POST\n{path}\n{unixtime}\n{scoreText}";
         var hmac = GetHmacSha256(hmacDataText, authenticationKey);
 
         // APIリクエストを送信する
         // スコアはFormDataとして付与する
         // 認証用の情報はリクエストヘッダーに付与する
-        var uri = $"/gameplay_api/v1/scoreboards/{boardNo}/scores";
         var form = new WWWForm();
         form.AddField("score", scoreText);
-        using var request = UnityWebRequest.Post(uri, form);
+        using var request = UnityWebRequest.Post(path, form);
         request.SetRequestHeader("X-Unityroom-Signature", hmac);
         request.SetRequestHeader("X-Unityroom-Timestamp", unixtime);
         yield return request.SendWebRequest();
